@@ -1,0 +1,372 @@
+/* =====================================================================
+   estils.css · Sabates vermelles
+
+   Ordre del fitxer:
+     1. Tokens      → colors i tipografies definits UNA vegada (variables CSS)
+     2. Base        → regles generals
+     3. Components  → capçalera, passos, filtres, graella, detall, ajuda
+
+   Concepte de disseny: el mur és un tros de paviment (com la plaça on es
+   col·loquen les sabates en els homenatges). Cada frase és una llosa.
+   El vermell només el fan servir les sabates i les accions: així destaca.
+   ===================================================================== */
+
+
+/* 1. TOKENS ----------------------------------------------------------
+   Per què variables? Si demà vols un altre vermell, el canvies en UN lloc
+   i tota la pàgina s'actualitza. */
+:root {
+  --paviment: #E6E3DF;     /* fons de la pàgina */
+  --llosa: #F1EFEC;        /* fons de caselles i quadres */
+  --junta: #C4BFBA;        /* vores fines */
+  --tinta: #1E1A1B;        /* text principal */
+  --tinta-suau: #5A5154;   /* text secundari */
+  --roig: #B1122B;         /* accent: sabates i botons */
+  --roig-fosc: #8E0C21;    /* accent en hover */
+  --sobre-roig: #FFFFFF;   /* text sobre fons vermell */
+  --sabata-fosc: #1E1A1B;  /* contorn i folre de la sabata */
+
+  --font-titol: "Big Shoulders Stencil Display", "Arial Narrow", Impact, sans-serif;
+  --font-text: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Mode fosc. Es repeteix en dos blocs perquè CSS pur no permet reutilitzar:
+   - el primer segueix la preferència del sistema operatiu,
+   - el segon respon al commutador manual de la pàgina (data-theme="dark").
+   Només redefinim les VARIABLES; cap component té colors escrits a mà. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paviment: #171415;
+    --llosa: #221E20;
+    --junta: #3B3537;
+    --tinta: #F0EBE8;
+    --tinta-suau: #AEA5A8;
+    --roig: #EE4B61;
+    --roig-fosc: #FF6A7D;
+    --sobre-roig: #171415;
+    --sabata-fosc: #0D0A0B;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paviment: #171415;
+  --llosa: #221E20;
+  --junta: #3B3537;
+  --tinta: #F0EBE8;
+  --tinta-suau: #AEA5A8;
+  --roig: #EE4B61;
+  --roig-fosc: #FF6A7D;
+  --sobre-roig: #171415;
+  --sabata-fosc: #0D0A0B;
+  color-scheme: dark;
+}
+
+
+/* 2. BASE ------------------------------------------------------------ */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* L'atribut HTML «hidden» ha de guanyar sempre, encara que un component
+   tingui el seu propi display (flex, grid…). */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: var(--paviment);
+  color: var(--tinta);
+  font: 1.0625rem/1.55 var(--font-text);
+  /* Marge lateral mínim de 16px; en mòbils amb osques o barres laterals
+     env(safe-area-inset-*) l'amplia automàticament. */
+  padding-block: 0 3rem;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+h1, h2, h3 { text-wrap: balance; }
+h2 { margin: 0; font-size: clamp(1.5rem, 4vw, 2rem); line-height: 1.15; }
+p { margin: 0 0 1rem; }
+svg { display: block; }
+
+/* Focus visible: imprescindible per a qui navega amb teclat */
+:focus-visible { outline: 3px solid var(--roig); outline-offset: 3px; }
+
+/* Contenidor central. Fem servir flex + gap en lloc de marges a cada bloc:
+   l'espai entre seccions es defineix en un sol lloc. */
+.pagina,
+.principal {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.5rem, 6vw, 4rem);
+}
+.pagina { max-width: 72rem; margin-inline: auto; }
+
+.etiqueta {
+  margin: 0 0 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--roig);
+}
+
+/* La sabata: el color ve de «currentColor», així canviem el color amb
+   la propietat CSS «color» sense tocar l'SVG. */
+.sabata { fill: currentColor; color: var(--roig); height: auto; }
+
+/* Les tres capes del dibuix. Els estils d'aquí arriben a l'interior del
+   <symbol> perquè les classes són les de l'element original. El cos no
+   necessita regla: hereta el vermell de «fill: currentColor». */
+.sabata__folre { fill: var(--sabata-fosc); }
+.sabata__vora {
+  fill: none;
+  stroke: var(--sabata-fosc);
+  stroke-width: 0.9;                   /* en unitats del viewBox: escala amb la sabata */
+  stroke-linejoin: round;
+}
+
+
+/* 3. COMPONENTS ------------------------------------------------------ */
+
+/* --- Botons --- */
+.boto {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;                 /* àrea tàctil còmoda en mòbil */
+  padding: 0.6rem 1.1rem;
+  font: 700 1rem var(--font-text);
+  color: var(--sobre-roig);
+  background: var(--roig);
+  border: 2px solid var(--roig);
+  border-radius: 2px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.boto:hover { background: var(--roig-fosc); border-color: var(--roig-fosc); }
+.boto--secundari { background: transparent; color: var(--tinta); border-color: var(--tinta); }
+.boto--secundari:hover { background: var(--tinta); border-color: var(--tinta); color: var(--paviment); }
+.boto[disabled] { opacity: 0.4; cursor: default; pointer-events: none; }
+/* Un enllaç sense href (encara sense configurar a dades.js) es veu desactivat */
+.boto[aria-disabled="true"] { opacity: 0.45; cursor: default; pointer-events: none; }
+
+/* --- Selector de tema (clar / fosc) ---
+   Mateix patró que els filtres: l'estil visual depèn de aria-pressed. */
+.tema {
+  grid-column: 1 / -1;                 /* ocupa tota la fila de dalt de la capçalera */
+  justify-self: end;
+  display: inline-flex;
+  border: 2px solid var(--junta);
+  border-radius: 2px;
+}
+.tema__opcio {
+  min-height: 2.25rem;
+  padding: 0.25rem 0.9rem;
+  font: 700 0.9rem var(--font-text);
+  color: var(--tinta);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.tema__opcio + .tema__opcio { border-left: 2px solid var(--junta); }
+.tema__opcio:hover { background: var(--llosa); }
+/* Va DESPRÉS del :hover perquè, amb la mateixa especificitat, guanya l'últim */
+.tema__opcio[aria-pressed="true"] { background: var(--tinta); color: var(--paviment); }
+
+/* --- Capçalera --- */
+.capcalera {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: center;
+  padding-block: clamp(2rem, 6vw, 4.5rem) 0;
+}
+@media (max-width: 760px) {
+  .capcalera { grid-template-columns: minmax(0, 1fr); }
+}
+.capcalera h1 {
+  margin: 0 0 1.25rem;
+  font-family: var(--font-titol);
+  font-weight: 800;
+  font-size: clamp(3rem, 11vw, 6.5rem);
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+.entradeta { max-width: 38rem; font-size: 1.15rem; margin-bottom: 1.5rem; }
+
+/* Les dues sabates reposen sobre una línia: el terra */
+.capcalera__sabates {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6%;
+  padding-inline: 4%;
+  border-bottom: 3px solid var(--tinta);
+}
+.sabata--gran { width: 46%; max-width: 15rem; aspect-ratio: 100 / 76; }
+
+/* --- Com participar --- */
+.passos {
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.5rem;
+  counter-reset: pas;                  /* comptador CSS: no cal escriure els números a mà */
+}
+.pas {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-width: 0;
+  padding-top: 0.9rem;
+  border-top: 2px solid var(--tinta);
+}
+.pas::before {
+  counter-increment: pas;
+  content: counter(pas);
+  font-family: var(--font-titol);
+  font-weight: 800;
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--roig);
+}
+.pas h3 { margin: 0; font-size: 1.15rem; }
+.pas p { margin: 0 0 0.5rem; color: var(--tinta-suau); }
+.pas .boto { margin-top: auto; }
+
+/* --- El mur --- */
+.mur__capcalera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+.recompte { margin: 0; color: var(--tinta-suau); font-variant-numeric: tabular-nums; }
+
+/* Filtres */
+.filtres { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-block: 1.25rem 1.5rem; }
+.filtre {
+  min-height: 2.5rem;
+  padding: 0.35rem 0.9rem;
+  font: 700 0.95rem var(--font-text);
+  color: var(--tinta);
+  background: transparent;
+  border: 2px solid var(--junta);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.filtre:hover { border-color: var(--tinta); }
+/* Estil lligat a l'atribut ARIA: una sola font de veritat per a l'estat visual i el d'accessibilitat */
+.filtre[aria-pressed="true"] { background: var(--tinta); border-color: var(--tinta); color: var(--paviment); }
+.filtre__n { margin-left: 0.4rem; font-weight: 400; font-variant-numeric: tabular-nums; opacity: 0.75; }
+
+/* Graella: «auto-fill + minmax» fa que el nombre de columnes s'adapti
+   sol a l'amplada. Cap @media necessari. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.75rem;
+}
+.tessella {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 0.9rem 0.9rem 0.8rem;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: var(--llosa);
+  border: 1px solid var(--junta);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.tessella:hover { border-color: var(--roig); }
+.tessella__sabata {
+  width: 100%;
+  aspect-ratio: 100 / 76;
+  /* --gir el posa app.js per a cada casella: cada sabata queda lleugerament torçada */
+  rotate: var(--gir, 0deg);
+  transition: rotate 0.2s ease, translate 0.2s ease;
+}
+.tessella:hover .tessella__sabata { rotate: 0deg; translate: 0 -3px; }
+.sabata.girada { scale: -1 1; }        /* reflex horitzontal: dona sensació de parell */
+.tessella__nom { font-weight: 700; overflow-wrap: anywhere; }
+.tessella__etapa {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-suau);
+}
+.buit { margin: 1rem 0 0; color: var(--tinta-suau); }
+
+/* --- Detall (finestra modal) --- */
+.detall {
+  width: min(40rem, calc(100% - 2rem));
+  padding: 0;
+  color: var(--tinta);
+  background: var(--llosa);
+  border: 1px solid var(--junta);
+  border-radius: 2px;
+}
+.detall::backdrop { background: rgb(20 15 16 / 0.62); }
+.detall__cos { display: grid; gap: 1.25rem; padding: clamp(1.25rem, 4vw, 2rem); }
+.detall__sabata { width: 7.5rem; aspect-ratio: 100 / 76; }
+.detall__frase {
+  margin: 0;
+  quotes: "«" "»";                     /* cometes catalanes */
+  font-size: clamp(1.35rem, 4.5vw, 1.9rem);
+  font-weight: 700;
+  line-height: 1.3;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.detall__frase::before { content: open-quote; }
+.detall__frase::after { content: close-quote; }
+.detall__autoria { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.75rem; }
+.detall__etapa { font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tinta-suau); }
+.detall__accions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem clamp(1.25rem, 4vw, 2rem);
+  border-top: 1px solid var(--junta);
+}
+.posicio { margin-inline: 0.25rem; color: var(--tinta-suau); font-variant-numeric: tabular-nums; }
+.detall__accions #tancar { margin-left: auto; }
+
+/* --- Ajuda --- */
+.ajuda { padding: clamp(1.25rem, 4vw, 2rem); background: var(--llosa); border: 1px solid var(--junta); border-radius: 2px; }
+.ajuda h2 { margin-bottom: 0.5rem; }
+.telefons {
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1.25rem;
+}
+.telefons li { min-width: 0; }
+.telefons p { margin: 0.35rem 0 0; color: var(--tinta-suau); }
+.telefon__num {
+  font-family: var(--font-titol);
+  font-weight: 800;
+  font-size: clamp(2rem, 7vw, 2.6rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--roig);
+  text-decoration: none;
+}
+
+/* --- Peu --- */
+.peu { padding-top: 1rem; border-top: 1px solid var(--junta); font-size: 0.9rem; color: var(--tinta-suau); }
+.peu p { margin: 0; }
+
+/* Respecta qui té activada l'opció «reduir moviment» al sistema */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

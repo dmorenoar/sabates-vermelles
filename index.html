@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  SABATES VERMELLES · 25N · Institut Tecnològic de Barcelona (ITB)
+
+  Estructura del projecte (cada fitxer fa UNA sola feina):
+    index.html  → l'ESTRUCTURA: quins blocs hi ha a la pàgina (HTML semàntic)
+    estils.css  → l'ASPECTE: colors, tipografia i disposició
+    dades.js    → les DADES: les frases i la configuració
+    app.js      → el COMPORTAMENT: filtrar, pintar la graella, obrir el detall
+
+  Per què separar-ho? Perquè puguem canviar d'on venen les frases (dades.js)
+  sense tocar res més. Això és «separació de responsabilitats».
+-->
+<title>Sabates vermelles ITB</title>
+<meta name="description" content="Mur de frases de l'alumnat de l'ITB per al 25N, vinculat al curtmetratge de les sabates vermelles.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Dues tipografies, dos <link> separats: si una falla, l'altra continua carregant -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@800&display=swap">
+<link rel="stylesheet" href="estils.css">
+</head>
+<body>
+
+<!--
+  Aquest petit script va AQUÍ, al principi, i no dins d'app.js, a propòsit.
+  Si esperem a app.js (que carrega al final i amb «defer»), la pàgina ja s'ha
+  pintat amb el tema del sistema i veuríem un parpelleig clar → fosc per a qui
+  va triar el fosc. Aquí s'executa abans de pintar res.
+  La clau de localStorage ha de ser la mateixa que CLAU_TEMA d'app.js.
+-->
+<script>
+  (() => {
+    try {
+      const triat = localStorage.getItem("tema-sabates");
+      if (triat === "light" || triat === "dark") document.documentElement.dataset.theme = triat;
+    } catch (error) {
+      /* sense localStorage: seguim el tema del sistema */
+    }
+  })();
+</script>
+
+<!--
+  La sabata es dibuixa UNA vegada com a <symbol> i després es reutilitza
+  amb <use> a cada casella. Principi DRY: «Don't Repeat Yourself».
+  El <svg> amagat no ocupa espai; només guarda la definició.
+-->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="sabata" viewBox="0 2 100 76">
+    <!-- Stiletto de perfil, dibuixat amb tres peces apilades, com capes:
+           1) el cos i el taló, en vermell (el color no és a l'SVG: ve de CSS)
+           2) el folre, la mitja lluna fosca que es veu per l'obertura
+           3) el contorn, només la línia
+         Cada capa té una classe perquè estils.css li doni el color. Així la
+         sabata canvia de color amb el mode fosc sense tocar aquest dibuix.
+         Per canviar de model només cal substituir aquests tres <path>. -->
+    <path class="sabata__cos" d="M22 4 C28 12 36 22 40 34 C43 44 46 54 54 58 C60 61 66 61 70 61 C80 62 88 66 96 69.5 C86 73.5 74 76 58 76 C50 76 44 74.5 38 68 C30 58 24 47 16.8 41 L15.6 77 L13.6 77 L12.6 41.5 C9 35 7 25 8.5 17 C10 11 16 6 22 4 Z"/>
+    <path class="sabata__folre" d="M22 4 C28 12 36 22 40 34 C43 44 46 54 54 58 C60 61 66 61 70 61 C65 61.8 59 62.5 54 61 C49 60.5 44.5 57 41.5 50 C40 45 38.5 40 37 35 C35.5 29.5 33 24 29.6 18.9 C27 14.5 24.5 8.5 22 4 Z"/>
+    <path class="sabata__vora" d="M22 4 C28 12 36 22 40 34 C43 44 46 54 54 58 C60 61 66 61 70 61 C80 62 88 66 96 69.5 C86 73.5 74 76 58 76 C50 76 44 74.5 38 68 C30 58 24 47 16.8 41 L15.6 77 L13.6 77 L12.6 41.5 C9 35 7 25 8.5 17 C10 11 16 6 22 4 Z"/>
+  </symbol>
+</svg>
+
+<div class="pagina">
+
+  <!-- ============ CAPÇALERA ============ -->
+  <header class="capcalera">
+    <!-- Selector de tema: dues opcions; el botó actiu es marca amb aria-pressed -->
+    <div id="tema" class="tema" role="group" aria-label="Tema de color">
+      <button type="button" class="tema__opcio" data-tema="light">Clar</button>
+      <button type="button" class="tema__opcio" data-tema="dark">Fosc</button>
+    </div>
+
+    <div class="capcalera__text">
+      <p class="etiqueta">25N · Dia internacional per a l'eliminació de la violència contra les dones</p>
+      <h1>Sabates vermelles</h1>
+      <p class="entradeta">
+        Un parell de sabates vermelles buides ocupa el lloc d'una dona que ja no hi és.
+        És un símbol contra la violència masclista. Després de veure el curtmetratge,
+        l'alumnat de l'ITB ha deixat una frase. Cada casella del mur n'amaga una.
+      </p>
+      <a class="boto" href="#mur">Llegir les frases</a>
+    </div>
+    <!-- Decoratiu: aria-hidden perquè un lector de pantalla no el llegeixi -->
+    <div class="capcalera__sabates" aria-hidden="true">
+      <svg class="sabata sabata--gran" viewBox="0 0 100 76"><use href="#sabata"/></svg>
+      <svg class="sabata sabata--gran" viewBox="0 0 100 76"><use href="#sabata"/></svg>
+    </div>
+  </header>
+
+  <main class="principal">
+
+    <!-- ============ COM PARTICIPAR ============ -->
+    <section aria-labelledby="titol-passos">
+      <h2 id="titol-passos">Com participar</h2>
+      <!-- <ol> (llista ordenada) perquè aquí l'ordre SÍ importa: primer el curt, després la frase -->
+      <ol class="passos">
+        <li class="pas">
+          <h3>Mira el curtmetratge</h3>
+          <p>El curt parla de les sabates vermelles. Mira'l abans d'escriure res.</p>
+          <a id="enllac-curt" class="boto" target="_blank" rel="noopener">Veure el curt</a>
+        </li>
+        <li class="pas">
+          <h3>Escriu la teva frase</h3>
+          <p>Omple el formulari amb el teu nom, la teva etapa educativa i una frase.</p>
+          <a id="enllac-formulari" class="boto" target="_blank" rel="noopener">Obrir el formulari</a>
+        </li>
+        <li class="pas">
+          <h3>Troba la teva casella</h3>
+          <p>Quan s'hagin revisat les respostes, la teva frase apareixerà al mur.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ============ EL MUR DE FRASES ============ -->
+    <section id="mur" aria-labelledby="titol-mur">
+      <div class="mur__capcalera">
+        <h2 id="titol-mur">El mur de frases</h2>
+        <!-- aria-live: quan canvia el filtre, el lector de pantalla anuncia el nou recompte -->
+        <p id="recompte" class="recompte" aria-live="polite"></p>
+      </div>
+
+      <!-- Els botons de filtre els crea app.js a partir de les etapes que hi ha a les dades -->
+      <div id="filtres" class="filtres" role="group" aria-label="Filtra per etapa educativa"></div>
+
+      <!-- Les caselles (una per frase) també les crea app.js -->
+      <div id="grid" class="grid"></div>
+      <p id="buit" class="buit" hidden>Encara no hi ha frases per mostrar.</p>
+    </section>
+
+    <!-- ============ AJUDA ============ -->
+    <section class="ajuda" aria-labelledby="titol-ajuda">
+      <h2 id="titol-ajuda">Si necessites ajuda</h2>
+      <p>Si tu o algú del teu entorn pateix violència masclista, hi ha persones que t'escoltaran.</p>
+      <ul class="telefons">
+        <li>
+          <a class="telefon__num" href="tel:900900120">900 900 120</a>
+          <p>Atenció a dones en situació de violència masclista. Gratuït i obert les 24 hores.</p>
+        </li>
+        <li>
+          <a class="telefon__num" href="tel:016">016</a>
+          <p>Informació i assessorament sobre violència de gènere. Gratuït i confidencial.</p>
+        </li>
+        <li>
+          <a class="telefon__num" href="tel:112">112</a>
+          <p>Emergències. Truca'l si hi ha un perill immediat.</p>
+        </li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="peu">
+    <p>Projecte de l'Institut Tecnològic de Barcelona (ITB) per al 25N.</p>
+  </footer>
+</div>
+
+<!--
+  <dialog> és un element NATIU d'HTML: el navegador ja gestiona el fons fosc,
+  el focus i la tecla Esc. Fer-ho a mà amb <div> costaria molt més codi.
+-->
+<dialog id="detall" class="detall" aria-labelledby="detall-nom">
+  <div class="detall__cos">
+    <svg class="sabata detall__sabata" viewBox="0 0 100 76" aria-hidden="true"><use href="#sabata"/></svg>
+    <blockquote id="detall-frase" class="detall__frase"></blockquote>
+    <p class="detall__autoria">
+      <strong id="detall-nom"></strong>
+      <span id="detall-etapa" class="detall__etapa"></span>
+    </p>
+  </div>
+  <div class="detall__accions">
+    <button type="button" id="anterior" class="boto boto--secundari">Anterior</button>
+    <span id="posicio" class="posicio"></span>
+    <button type="button" id="seguent" class="boto boto--secundari">Següent</button>
+    <button type="button" id="tancar" class="boto">Tanca</button>
+  </div>
+</dialog>
+
+<!-- «defer»: el navegador descarrega els scripts mentre llegeix l'HTML i els executa
+     en ordre quan ja existeix tot el DOM. L'ordre importa: app.js necessita dades.js. -->
+<script src="dades.js" defer></script>
+<script src="app.js" defer></script>
+</body>
+</html>
