@@ -44,26 +44,6 @@
   })();
 </script>
 
-<!--
-  La sabata es dibuixa UNA vegada com a <symbol> i després es reutilitza
-  amb <use> a cada casella. Principi DRY: «Don't Repeat Yourself».
-  El <svg> amagat no ocupa espai; només guarda la definició.
--->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <symbol id="sabata" viewBox="0 2 100 76">
-    <!-- Stiletto de perfil, dibuixat amb tres peces apilades, com capes:
-           1) el cos i el taló, en vermell (el color no és a l'SVG: ve de CSS)
-           2) el folre, la mitja lluna fosca que es veu per l'obertura
-           3) el contorn, només la línia
-         Cada capa té una classe perquè estils.css li doni el color. Així la
-         sabata canvia de color amb el mode fosc sense tocar aquest dibuix.
-         Per canviar de model només cal substituir aquests tres <path>. -->
-    <path class="sabata__cos" d="M22 4 C28 12 36 22 40 34 C43 44 46 54 54 58 C60 61 66 61 70 61 C80 62 88 66 96 69.5 C86 73.5 74 76 58 76 C50 76 44 74.5 38 68 C30 58 24 47 16.8 41 L15.6 77 L13.6 77 L12.6 41.5 C9 35 7 25 8.5 17 C10 11 16 6 22 4 Z"/>
-    <path class="sabata__folre" d="M22 4 C28 12 36 22 40 34 C43 44 46 54 54 58 C60 61 66 61 70 61 C65 61.8 59 62.5 54 61 C49 60.5 44.5 57 41.5 50 C40 45 38.5 40 37 35 C35.5 29.5 33 24 29.6 18.9 C27 14.5 24.5 8.5 22 4 Z"/>
-    <path class="sabata__vora" d="M22 4 C28 12 36 22 40 34 C43 44 46 54 54 58 C60 61 66 61 70 61 C80 62 88 66 96 69.5 C86 73.5 74 76 58 76 C50 76 44 74.5 38 68 C30 58 24 47 16.8 41 L15.6 77 L13.6 77 L12.6 41.5 C9 35 7 25 8.5 17 C10 11 16 6 22 4 Z"/>
-  </symbol>
-</svg>
-
 <div class="pagina">
 
   <!-- ============ CAPÇALERA ============ -->
@@ -86,8 +66,8 @@
     </div>
     <!-- Decoratiu: aria-hidden perquè un lector de pantalla no el llegeixi -->
     <div class="capcalera__sabates" aria-hidden="true">
-      <svg class="sabata sabata--gran" viewBox="0 0 100 76"><use href="#sabata"/></svg>
-      <svg class="sabata sabata--gran" viewBox="0 0 100 76"><use href="#sabata"/></svg>
+      <img class="sabata sabata--gran" src="sabata.webp" alt="" width="440" height="254">
+      <img class="sabata sabata--gran" src="sabata.webp" alt="" width="440" height="254">
     </div>
   </header>
 
@@ -164,7 +144,7 @@
 -->
 <dialog id="detall" class="detall" aria-labelledby="detall-nom">
   <div class="detall__cos">
-    <svg class="sabata detall__sabata" viewBox="0 0 100 76" aria-hidden="true"><use href="#sabata"/></svg>
+    <img class="sabata detall__sabata" src="sabata.webp" alt="" width="440" height="254">
     <blockquote id="detall-frase" class="detall__frase"></blockquote>
     <p class="detall__autoria">
       <strong id="detall-nom"></strong>

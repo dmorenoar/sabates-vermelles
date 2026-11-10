@@ -31,7 +31,10 @@ const estat = {
 // Angles (en graus) per torçar una mica cada sabata. Escrit a mà i no amb
 // Math.random() perquè així la pàgina es veu igual a cada visita.
 const GIRS = [-5, 3, -2, 6, -4, 2, -6, 4];
-const NS_SVG = "http://www.w3.org/2000/svg";   // els elements SVG s'han de crear amb aquest «namespace»
+
+// La imatge de la sabata. Posar ample i alçada evita que la pàgina «salti»
+// mentre la imatge es carrega: el navegador ja reserva el forat.
+const SABATA = { src: "sabata.webp", ample: 440, alcada: 254 };
 
 
 /* 2. DOM -------------------------------------------------------------- */
@@ -118,17 +121,16 @@ function crearTessella(frase, posicio) {
   boto.dataset.index = posicio;
   boto.setAttribute("aria-label", `Llegeix la frase de ${frase.nom}, ${frase.etapa}`);
 
-  // La sabata: un <svg> que reutilitza el <symbol id="sabata"> de l'HTML
-  const svg = document.createElementNS(NS_SVG, "svg");
-  svg.setAttribute("viewBox", "0 0 100 76");   // ha de coincidir amb la proporció del <symbol> de l'HTML
-  svg.setAttribute("aria-hidden", "true");
-  svg.classList.add("sabata", "tessella__sabata");
-  if (posicio % 2 === 1) svg.classList.add("girada");          // una sí, una no, mirall
-  svg.style.setProperty("--gir", GIRS[posicio % GIRS.length] + "deg");   // JS → variable CSS
-
-  const referencia = document.createElementNS(NS_SVG, "use");
-  referencia.setAttribute("href", "#sabata");
-  svg.append(referencia);
+  // La sabata: una <img>. alt="" perquè és decorativa (el botó ja té aria-label).
+  const img = document.createElement("img");
+  img.src = SABATA.src;
+  img.alt = "";
+  img.width = SABATA.ample;
+  img.height = SABATA.alcada;
+  img.decoding = "async";
+  img.classList.add("sabata", "tessella__sabata");
+  if (posicio % 2 === 1) img.classList.add("girada");          // una sí, una no, mirall
+  img.style.setProperty("--gir", GIRS[posicio % GIRS.length] + "deg");   // JS → variable CSS
 
   const nom = document.createElement("span");
   nom.className = "tessella__nom";
@@ -138,7 +140,7 @@ function crearTessella(frase, posicio) {
   etapa.className = "tessella__etapa";
   etapa.textContent = frase.etapa;
 
-  boto.append(svg, nom, etapa);
+  boto.append(img, nom, etapa);
   return boto;
 }
 

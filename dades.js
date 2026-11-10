@@ -3,15 +3,15 @@
 
    TRES MANERES D'OMPLIR EL MUR (de la més senzilla a la més professional)
 
-   NIVELL 1 · Les frases dins d'aquest fitxer (és el que fa servir ara)
+   NIVELL 1 · Les frases dins d'aquest fitxer (ara només com a dades d'exemple)
      Flux: Google Forms → full de càlcul → les passes aquí a mà o amb un
      petit script. Avantatges: zero servidors i tu revises cada frase
      abans de publicar-la (moderació gratuïta). Inconvenient: cada
      frase nova demana tocar el fitxer.
 
-   NIVELL 2 · Google Forms + Google Sheets publicat com a CSV
+   NIVELL 2 · Google Forms + Google Sheets publicat com a CSV  (ACTIU ARA)
      La pàgina llegeix el full en directe amb fetch(). Encara no cal
-     backend. Mira el bloc comentat de sota i activa'l descomentant-lo.
+     backend. Mira la funció obtenirFrases() de sota.
 
    NIVELL 3 · Backend propi (API REST)
      Node + Express + una base de dades (SQLite, per exemple). El
@@ -42,8 +42,9 @@ const CONFIG = {
   // Enllaç al formulari de Google Forms on l'alumnat deixa la frase.
   urlFormulari: "",
 
-  // Només per al NIVELL 2: URL del full publicat com a CSV.
-  urlCsv: ""
+  // URL de la pestanya «Publicades» del full de càlcul, publicada com a CSV.
+  // Si la deixes buida, la web fa servir les frases d'exemple de sota (FRASES_EXEMPLE).
+  urlCsv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTWnBd_nanxm56jAz17jW2BWrPdAOhgom3KGK7BQx6t4bnc7AOEW2pUzOFZKd58bB3LUG8fyqjszTLX/pub?gid=1119069832&single=true&output=csv"
 };
 
 
@@ -68,11 +69,11 @@ const ETAPES = ["PFI", "CFGM", "CFGS", "MÀSTER", "PERSONAL DEL CENTRE"];
    NIVELL 1 · Les dades
    Un array d'objectes: cada objecte és una frase amb tres camps
    (nom, etapa i frase). L'etapa ha de ser una de les de ETAPES.
-   ATENCIÓ: aquestes frases i noms són INVENTATS, només serveixen per
-   provar el disseny. Substitueix-los per les respostes reals.
+   ATENCIÓ: aquestes frases i noms són INVENTATS. Només es fan servir si
+   CONFIG.urlCsv és buit (per provar el disseny sense connexió).
    Per privacitat, millor només el nom de pila (i amb permís).
    --------------------------------------------------------------------- */
-const FRASES = [
+const FRASES_EXEMPLE = [
   { nom: "Àlex",    etapa: "PFI",    frase: "Crec en un món on ningú tingui por de dir que no." },
   { nom: "Nil",     etapa: "PFI",    frase: "Si la violència comença amb paraules, la prevenció també." },
   { nom: "Hugo",    etapa: "PFI",    frase: "Una broma que humilia no és una broma." },
@@ -101,86 +102,79 @@ const FRASES = [
 
 
 /* ---------------------------------------------------------------------
-   NIVELL 1 · La funció que fa servir app.js
+   NIVELL 2 · Google Sheets publicat com a CSV  (ACTIU)
 
-   Per què és «async» si ara només retorna un array?
-   Perquè en els nivells 2 i 3 les dades arriben per xarxa i tardaran.
-   Si des del principi app.js fa «await obtenirFrases()», quan canviem de
-   nivell no haurem de modificar res més. Dissenyem pensant en el futur.
+   Flux: Google Forms → pestanya de respostes → pestanya «Publicades» →
+   CSV públic → aquesta pàgina.
+
+   A la pestanya «Publicades» hi ha una fórmula FILTER que només deixa
+   passar les files amb «SI» a la columna Publicar (moderació) i, de passada,
+   es queda només amb el NOM DE PILA (per privacitat). El CSV públic només
+   té tres columnes: Nom, Etapa i Frase. Les dades privades no hi surten mai.
+
+   Per què «async»? Perquè llegir un fitxer per xarxa tarda, i app.js fa
+   «await obtenirFrases()»: espera sense bloquejar la pàgina.
    --------------------------------------------------------------------- */
-async function obtenirFrases() {
-  return FRASES;
+
+// Analitza un text CSV i el converteix en un array de files.
+// Per què no fem text.split(","), que seria el més fàcil? Perquè una
+// frase pot contenir comes i salts de línia entre cometes. Cal recórrer
+// el text caràcter a caràcter recordant si som «dins de cometes».
+function analitzarCsv(text) {
+  const files = [];
+  let fila = [];
+  let camp = "";
+  let entreCometes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (entreCometes) {
+      if (c === '"' && text[i + 1] === '"') { camp += '"'; i++; } // "" vol dir una cometa literal
+      else if (c === '"') entreCometes = false;
+      else camp += c;
+    } else if (c === '"') {
+      entreCometes = true;
+    } else if (c === ",") {
+      fila.push(camp); camp = "";
+    } else if (c === "\n") {
+      fila.push(camp); files.push(fila); fila = []; camp = "";
+    } else if (c !== "\r") {
+      camp += c;
+    }
+  }
+  if (camp !== "" || fila.length > 0) { fila.push(camp); files.push(fila); }
+  return files;
 }
 
+async function obtenirFrases() {
+  // Sense URL configurada: dades d'exemple (útil per provar en local)
+  if (!CONFIG.urlCsv) return FRASES_EXEMPLE;
 
-/* ---------------------------------------------------------------------
-   NIVELL 2 · Google Sheets publicat com a CSV  (comentat)
+  const resposta = await fetch(CONFIG.urlCsv);
+  if (!resposta.ok) throw new Error("No s'ha pogut llegir el full (" + resposta.status + ")");
 
-   Passes:
-   1. Google Forms → pestanya «Respostes» → «Enllaça amb Fulls de càlcul».
-      Recorda: la pregunta d'etapa ha de ser una LLISTA DESPLEGABLE amb
-      les cinc opcions de ETAPES, escrites igual.
-   2. Al full, afegeix una columna E amb el títol «Publicar». Escriu SI a
-      les files que has revisat (moderació!).
-   3. Fitxer → Compartir → Publicar a la web → format CSV → copia la URL
-      a CONFIG.urlCsv.
-   4. Esborra la funció obtenirFrases() del Nivell 1 i descomenta aquesta.
+  const files = analitzarCsv(await resposta.text());
+  const capcalera = files.shift().map((titol) => titol.trim().toLowerCase());
 
-   PRECAUCIÓ: un CSV publicat és PÚBLIC per a qualsevol que tingui
-   l'enllaç. Si el formulari recull dades que no volem mostrar (correu,
-   per exemple), publica una pestanya a part només amb les columnes i
-   les files aprovades.
+  // Busquem cada columna pel NOM de la capçalera i no per la posició.
+  // Així, si algú afegeix o mou una columna al full, la web no es trenca.
+  const colNom = capcalera.indexOf("nom");
+  const colEtapa = capcalera.indexOf("etapa");
+  const colFrase = capcalera.indexOf("frase");
+  if (colNom < 0 || colEtapa < 0 || colFrase < 0) {
+    throw new Error("Falten columnes al full: calen Nom, Etapa i Frase");
+  }
 
-   Prova-ho amb Live Server de VS Code: fetch() des de file:// pot
-   donar problemes en alguns navegadors.
+  return files.map((fila) => ({
+    nom: (fila[colNom] || "").trim(),
+    // toUpperCase: defensa extra contra «cfgs » o «Màster» (la llista ETAPES va en majúscules)
+    etapa: (fila[colEtapa] || "").trim().toUpperCase(),
+    frase: (fila[colFrase] || "").trim()
+  }));
+}
 
-   // Analitza un text CSV i el converteix en un array de files.
-   // Per què no fem text.split(","), que seria el més fàcil? Perquè una
-   // frase pot contenir comes i salts de línia entre cometes. Cal recórrer
-   // el text caràcter a caràcter recordant si som «dins de cometes».
-   function analitzarCsv(text) {
-     const files = [];
-     let fila = [];
-     let camp = "";
-     let entreCometes = false;
-
-     for (let i = 0; i < text.length; i++) {
-       const c = text[i];
-       if (entreCometes) {
-         if (c === '"' && text[i + 1] === '"') { camp += '"'; i++; } // "" vol dir una cometa literal
-         else if (c === '"') entreCometes = false;
-         else camp += c;
-       } else if (c === '"') {
-         entreCometes = true;
-       } else if (c === ",") {
-         fila.push(camp); camp = "";
-       } else if (c === "\n") {
-         fila.push(camp); files.push(fila); fila = []; camp = "";
-       } else if (c !== "\r") {
-         camp += c;
-       }
-     }
-     if (camp !== "" || fila.length > 0) { fila.push(camp); files.push(fila); }
-     return files;
-   }
-
-   async function obtenirFrases() {
-     const resposta = await fetch(CONFIG.urlCsv);
-     if (!resposta.ok) throw new Error("No s'ha pogut llegir el full (" + resposta.status + ")");
-
-     const files = analitzarCsv(await resposta.text());
-     files.shift();                              // la primera fila són les capçaleres
-
-     // Columnes: 0 = marca de temps, 1 = nom, 2 = etapa, 3 = frase, 4 = Publicar
-     return files
-       .filter((fila) => fila[4] === "SI")       // només el que hem aprovat
-       .map(([, nom, etapa, frase]) => ({
-         nom,
-         etapa: etapa.trim().toUpperCase(),      // defensa extra contra «cfgs » o «Màster»
-         frase
-       }));
-   }
-   --------------------------------------------------------------------- */
+/* Per al desenvolupament: si vols tornar a les dades d'exemple, posa
+   CONFIG.urlCsv = "". El bloc NIVELL 1 de dalt (FRASES_EXEMPLE) segueix aquí. */
 
 
 /* ---------------------------------------------------------------------

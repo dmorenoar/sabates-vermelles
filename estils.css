@@ -24,7 +24,6 @@
   --roig: #B1122B;         /* accent: sabates i botons */
   --roig-fosc: #8E0C21;    /* accent en hover */
   --sobre-roig: #FFFFFF;   /* text sobre fons vermell */
-  --sabata-fosc: #1E1A1B;  /* contorn i folre de la sabata */
 
   --font-titol: "Big Shoulders Stencil Display", "Arial Narrow", Impact, sans-serif;
   --font-text: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -44,7 +43,6 @@
     --roig: #EE4B61;
     --roig-fosc: #FF6A7D;
     --sobre-roig: #171415;
-    --sabata-fosc: #0D0A0B;
     color-scheme: dark;
   }
 }
@@ -57,7 +55,6 @@
   --roig: #EE4B61;
   --roig-fosc: #FF6A7D;
   --sobre-roig: #171415;
-  --sabata-fosc: #0D0A0B;
   color-scheme: dark;
 }
 
@@ -108,20 +105,10 @@ svg { display: block; }
   color: var(--roig);
 }
 
-/* La sabata: el color ve de «currentColor», així canviem el color amb
-   la propietat CSS «color» sense tocar l'SVG. */
-.sabata { fill: currentColor; color: var(--roig); height: auto; }
-
-/* Les tres capes del dibuix. Els estils d'aquí arriben a l'interior del
-   <symbol> perquè les classes són les de l'element original. El cos no
-   necessita regla: hereta el vermell de «fill: currentColor». */
-.sabata__folre { fill: var(--sabata-fosc); }
-.sabata__vora {
-  fill: none;
-  stroke: var(--sabata-fosc);
-  stroke-width: 0.9;                   /* en unitats del viewBox: escala amb la sabata */
-  stroke-linejoin: round;
-}
+/* La sabata és una imatge (sabata.webp, amb fons transparent), així que
+   funciona igual en tema clar i fosc. «display:block» treu el petit buit
+   que una imatge en línia deixa sota seu; «height:auto» manté la proporció. */
+.sabata { display: block; max-width: 100%; height: auto; }
 
 
 /* 3. COMPONENTS ------------------------------------------------------ */
@@ -202,7 +189,7 @@ svg { display: block; }
   padding-inline: 4%;
   border-bottom: 3px solid var(--tinta);
 }
-.sabata--gran { width: 46%; max-width: 15rem; aspect-ratio: 100 / 76; }
+.sabata--gran { width: 46%; max-width: 15rem; }
 
 /* --- Com participar --- */
 .passos {
@@ -287,7 +274,6 @@ svg { display: block; }
 .tessella:hover { border-color: var(--roig); }
 .tessella__sabata {
   width: 100%;
-  aspect-ratio: 100 / 76;
   /* --gir el posa app.js per a cada casella: cada sabata queda lleugerament torçada */
   rotate: var(--gir, 0deg);
   transition: rotate 0.2s ease, translate 0.2s ease;
@@ -314,7 +300,7 @@ svg { display: block; }
 }
 .detall::backdrop { background: rgb(20 15 16 / 0.62); }
 .detall__cos { display: grid; gap: 1.25rem; padding: clamp(1.25rem, 4vw, 2rem); }
-.detall__sabata { width: 7.5rem; aspect-ratio: 100 / 76; }
+.detall__sabata { width: 8.5rem; }
 .detall__frase {
   margin: 0;
   quotes: "«" "»";                     /* cometes catalanes */
