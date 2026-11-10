@@ -40,7 +40,7 @@ const CONFIG = {
   urlCurt: "https://youtu.be/n_5vaz1dehQ",
 
   // Enllaç al formulari de Google Forms on l'alumnat deixa la frase.
-  urlFormulari: "",
+  urlFormulari: "https://docs.google.com/forms/d/e/1FAIpQLSdhDr14V567pnlairoaU8YYrG76_O5O-5RKxuHx5zzbOM-sgg/viewform",
 
   // URL de la pestanya «Publicades» del full de càlcul, publicada com a CSV.
   // Si la deixes buida, la web fa servir les frases d'exemple de sota (FRASES_EXEMPLE).
