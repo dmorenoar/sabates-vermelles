@@ -37,7 +37,7 @@
 const CONFIG = {
   // Enllaç al curtmetratge (YouTube, Vimeo, el servidor de l'ITB…).
   // Mentre estigui buit, el botó apareix desactivat.
-  urlCurt: "",
+  urlCurt: "https://youtu.be/n_5vaz1dehQ",
 
   // Enllaç al formulari de Google Forms on l'alumnat deixa la frase.
   urlFormulari: "",
