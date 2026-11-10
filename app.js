@@ -34,7 +34,7 @@ const GIRS = [-5, 3, -2, 6, -4, 2, -6, 4];
 
 // La imatge de la sabata. Posar ample i alçada evita que la pàgina «salti»
 // mentre la imatge es carrega: el navegador ja reserva el forat.
-const SABATA = { src: "sabata.webp", ample: 440, alcada: 254 };
+const SABATA = { src: "sabata.webp", ample: 440, alcada: 251 };
 
 
 /* 2. DOM -------------------------------------------------------------- */
