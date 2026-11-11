@@ -221,7 +221,10 @@ function pintarCarrusel() {
   elCarrusel.replaceChildren(...barrejar(estat.frases).map(crearDiapositiva));
 }
 
-// Avança una diapositiva. Quan arribem al final, tornem al principi.
+// Avança una diapositiva. Quan arribem al final, tornem al principi
+// AMB UNA BARREJA NOVA: així l'ordre no es repeteix mai igual. I com que
+// barregem estat.frases (el total), si l'alumnat afegeix frases noves al Sheet
+// entren soles al carrusel, sense tocar res.
 function avancarCarrusel() {
   const primera = elCarrusel.firstElementChild;
   if (!primera) return;
@@ -230,7 +233,12 @@ function avancarCarrusel() {
   const buit = parseFloat(getComputedStyle(elCarrusel).columnGap) || 0;
   const pas = primera.getBoundingClientRect().width + buit;         // el que ocupa una diapositiva
   const alFinal = elCarrusel.scrollLeft >= maxim - 4;               // -4: marge per als decimals
-  elCarrusel.scrollTo({ left: alFinal ? 0 : elCarrusel.scrollLeft + pas, behavior: "smooth" });
+  if (alFinal) {
+    pintarCarrusel();                // nova barreja de totes les frases
+    elCarrusel.scrollLeft = 0;       // tornem a l'inici de cop (sense animació)
+    return;
+  }
+  elCarrusel.scrollTo({ left: elCarrusel.scrollLeft + pas, behavior: "smooth" });
 }
 
 function engegarCarrusel() {

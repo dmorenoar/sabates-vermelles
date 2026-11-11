@@ -295,7 +295,7 @@ svg { display: block; }
    quedar a mig camí. El JS només hi afegeix l'avanç automàtic. */
 .carrusel {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;                     /* separació entre quadres (abans 1rem) */
   margin-top: 1.25rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
