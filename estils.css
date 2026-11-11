@@ -289,6 +289,46 @@ svg { display: block; }
 }
 .buit { margin: 1rem 0 0; color: var(--tinta-suau); }
 
+/* --- Carrusel de frases (entre el títol del mur i els filtres) ---
+   Com funciona sense JavaScript: la pista és un flex amb overflow-x. Amb
+   «scroll-snap» cada diapositiva s'atura alineada a l'esquerra en lloc de
+   quedar a mig camí. El JS només hi afegeix l'avanç automàtic. */
+.carrusel {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;           /* amaga la barra (Firefox) */
+}
+.carrusel::-webkit-scrollbar { display: none; }   /* amaga la barra (Chrome, Safari) */
+.carrusel:empty { display: none; }
+.diapositiva {
+  flex: 0 0 min(22rem, 85%);       /* mai més ample que la pantalla: es veu que n'hi ha una altra al costat */
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.1rem;
+  background: var(--llosa);
+  border: 1px solid var(--junta);
+  border-radius: 2px;
+}
+.diapositiva__sabata { width: 6.5rem; }
+.diapositiva__etapa {
+  align-self: flex-start;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sobre-roig);
+  background: var(--roig);
+  border-radius: 2px;
+}
+.diapositiva__frase { margin: 0; font-size: 1.05rem; line-height: 1.45; flex: 1; }
+.diapositiva__nom { font-weight: 700; overflow-wrap: anywhere; }
+
 /* --- Detall (finestra modal) --- */
 .detall {
   width: min(40rem, calc(100% - 2rem));

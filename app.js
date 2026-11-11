@@ -34,7 +34,7 @@ const GIRS = [-5, 3, -2, 6, -4, 2, -6, 4];
 
 // La imatge de la sabata. Posar ample i alçada evita que la pàgina «salti»
 // mentre la imatge es carrega: el navegador ja reserva el forat.
-const SABATA = { src: "sabata.webp", ample: 440, alcada: 251 };
+const SABATA = { src: "sabata.webp", ample: 440, alcada: 232 };
 
 
 /* 2. DOM -------------------------------------------------------------- */
@@ -49,6 +49,7 @@ const elDetall = $("#detall");
 const elAnterior = $("#anterior");
 const elSeguent = $("#seguent");
 const elTema = $("#tema");
+const elCarrusel = $("#carrusel");
 
 
 /* 3. FUNCIONS --------------------------------------------------------- */
@@ -161,6 +162,88 @@ function pintarGrid() {
 function actualitzar() {
   marcarFiltreActiu();
   pintarGrid();
+}
+
+/* --- 3.2b Carrusel ---
+
+   Tres peces petites, cadascuna amb una sola feina:
+     barrejar()         → ordre aleatori
+     pintarCarrusel()   → crea les diapositives
+     engegarCarrusel()  → l'avanç automàtic (setInterval) */
+
+const MS_CARRUSEL = 4500;     // temps entre diapositives (mil·lèsimes de segon)
+let rellotgeCarrusel = null;  // l'identificador del setInterval, per poder-lo aturar
+
+// Barreja una llista amb l'algoritme de Fisher-Yates: recorrem de darrere
+// cap endavant i canviem cada element per un altre d'una posició anterior
+// triada a l'atzar. Per què no fer .sort(() => Math.random() - 0.5)? Perquè
+// és un truc molt estès però NO barreja bé (alguns ordres surten més sovint).
+// Treballem sobre una còpia ([...llista]) per no alterar l'ordre original.
+function barrejar(llista) {
+  const copia = [...llista];
+  for (let i = copia.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));   // enter de 0 a i, tots dos inclosos
+    [copia[i], copia[j]] = [copia[j], copia[i]];     // intercanvi sense variable temporal
+  }
+  return copia;
+}
+
+function crearDiapositiva(frase) {
+  const targeta = document.createElement("figure");   // <figure>: bloc amb contingut autònom
+  targeta.className = "diapositiva";
+
+  const img = document.createElement("img");
+  img.src = SABATA.src;
+  img.alt = "";
+  img.width = SABATA.ample;
+  img.height = SABATA.alcada;
+  img.className = "sabata diapositiva__sabata";
+
+  const etapa = document.createElement("span");
+  etapa.className = "diapositiva__etapa";
+  etapa.textContent = frase.etapa;
+
+  // <blockquote> és l'element semàntic per a una cita. textContent, no innerHTML (XSS)
+  const cita = document.createElement("blockquote");
+  cita.className = "diapositiva__frase";
+  cita.textContent = frase.frase;
+
+  const nom = document.createElement("figcaption");
+  nom.className = "diapositiva__nom";
+  nom.textContent = frase.nom;
+
+  targeta.append(img, etapa, cita, nom);
+  return targeta;
+}
+
+// El carrusel mostra TOTES les frases (no depèn del filtre) en ordre aleatori
+function pintarCarrusel() {
+  elCarrusel.replaceChildren(...barrejar(estat.frases).map(crearDiapositiva));
+}
+
+// Avança una diapositiva. Quan arribem al final, tornem al principi.
+function avancarCarrusel() {
+  const primera = elCarrusel.firstElementChild;
+  if (!primera) return;
+  const maxim = elCarrusel.scrollWidth - elCarrusel.clientWidth;   // fins on es pot desplaçar
+  if (maxim <= 0) return;                                           // tot hi cap: no cal moure res
+  const buit = parseFloat(getComputedStyle(elCarrusel).columnGap) || 0;
+  const pas = primera.getBoundingClientRect().width + buit;         // el que ocupa una diapositiva
+  const alFinal = elCarrusel.scrollLeft >= maxim - 4;               // -4: marge per als decimals
+  elCarrusel.scrollTo({ left: alFinal ? 0 : elCarrusel.scrollLeft + pas, behavior: "smooth" });
+}
+
+function engegarCarrusel() {
+  // Respectem «reduir moviment»: qui ho té activat no veu res movent-se sol
+  // (ho pot recórrer amb el dit o el teclat).
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  aturarCarrusel();                                  // evita tenir dos rellotges alhora
+  rellotgeCarrusel = setInterval(avancarCarrusel, MS_CARRUSEL);
+}
+
+function aturarCarrusel() {
+  clearInterval(rellotgeCarrusel);
+  rellotgeCarrusel = null;
 }
 
 /* --- 3.3 Finestra de detall --- */
@@ -297,6 +380,13 @@ new MutationObserver(marcarTema).observe(document.documentElement, {
   attributeFilter: ["data-theme"]
 });
 
+// Pausa del carrusel mentre l'usuari el mira (ratolí a sobre) o l'enfoca
+// amb el teclat: res més molest que una frase que fuig mentre la llegeixes.
+elCarrusel.addEventListener("pointerenter", aturarCarrusel);
+elCarrusel.addEventListener("pointerleave", engegarCarrusel);
+elCarrusel.addEventListener("focusin", aturarCarrusel);
+elCarrusel.addEventListener("focusout", engegarCarrusel);
+
 // Clicar al fons fosc tanca la finestra. Quan es clica el fons, el
 // «target» és el propi <dialog> (el contingut ocupa tot l'interior).
 elDetall.addEventListener("click", (event) => {
@@ -333,6 +423,8 @@ async function iniciar() {
 
   pintarFiltres();
   actualitzar();
+  pintarCarrusel();
+  engegarCarrusel();
 }
 
 iniciar();

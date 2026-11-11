@@ -22,7 +22,7 @@ Cada fitxer fa una sola feina:
 | `estils.css` | L'aspecte: colors i tipografies com a variables CSS, disposició i tema clar/fosc. |
 | `dades.js` | La configuració, la llista d'etapes, les frases i la funció `obtenirFrases()`. |
 | `app.js` | El comportament: filtrar, pintar la graella, obrir el detall i canviar de tema. |
-| `sabata.webp` | La imatge de les sabates (fons transparent, 440×251 px). |
+| `sabata.webp` | La imatge de les sabates (fons transparent, 440×232 px). |
 
 `app.js` no sap d'on vénen les frases: només crida `obtenirFrases()`. Per això, quan les dades passin d'un fitxer a un full de càlcul, només caldrà canviar aquesta funció.
 

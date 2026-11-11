@@ -69,8 +69,8 @@
     </div>
     <!-- Decoratiu: aria-hidden perquè un lector de pantalla no el llegeixi -->
     <div class="capcalera__sabates" aria-hidden="true">
-      <img class="sabata sabata--gran" src="sabata.webp" alt="" width="440" height="251">
-      <img class="sabata sabata--gran" src="sabata.webp" alt="" width="440" height="251">
+      <img class="sabata sabata--gran" src="sabata.webp" alt="" width="440" height="232">
+      <img class="sabata sabata--gran" src="sabata.webp" alt="" width="440" height="232">
     </div>
   </header>
 
@@ -105,6 +105,15 @@
         <!-- aria-live: quan canvia el filtre, el lector de pantalla anuncia el nou recompte -->
         <p id="recompte" class="recompte" aria-live="polite"></p>
       </div>
+
+      <!--
+        CARRUSEL: una fila horitzontal de frases en ordre ALEATORI que avança sola.
+        És un <div> amb desplaçament horitzontal (scroll-snap en CSS); app.js hi
+        crea les diapositives i el fa avançar. tabindex="0" perquè qui navega
+        amb teclat pugui enfocar-lo i moure'l amb les fletxes.
+      -->
+      <div id="carrusel" class="carrusel" role="region" tabindex="0"
+           aria-label="Frases de l'alumnat, en ordre aleatori"></div>
 
       <!-- Els botons de filtre els crea app.js a partir de les etapes que hi ha a les dades -->
       <div id="filtres" class="filtres" role="group" aria-label="Filtra per etapa educativa"></div>
@@ -147,7 +156,7 @@
 -->
 <dialog id="detall" class="detall" aria-labelledby="detall-nom">
   <div class="detall__cos">
-    <img class="sabata detall__sabata" src="sabata.webp" alt="" width="440" height="251">
+    <img class="sabata detall__sabata" src="sabata.webp" alt="" width="440" height="232">
     <blockquote id="detall-frase" class="detall__frase"></blockquote>
     <p class="detall__autoria">
       <strong id="detall-nom"></strong>
