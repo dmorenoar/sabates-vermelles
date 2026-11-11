@@ -26,10 +26,6 @@ Cada fitxer fa una sola feina:
 
 `app.js` no sap d'on vénen les frases: només crida `obtenirFrases()`. Per això, quan les dades passin d'un fitxer a un full de càlcul, només caldrà canviar aquesta funció.
 
-## Com provar-la en local
-
-Obre `index.html` amb doble clic. Funciona sense servidor perquè no fem servir mòduls ES, que els navegadors bloquegen amb el protocol `file://`. Per fer proves amb més comoditat, es pot fer servir l'extensió Live Server de VS Code.
-
 ## D'on surten les frases
 
 Les frases arriben d'un full de càlcul de Google que omple el formulari. Funciona així:
@@ -40,8 +36,6 @@ Les frases arriben d'un full de càlcul de Google que omple el formulari. Funcio
 
 L'adreça del CSV és a `CONFIG.urlCsv`, dins de `dades.js`. Si la deixes buida, la web mostra les frases d'exemple (`FRASES_EXEMPLE`). Google triga uns minuts a refrescar un CSV publicat.
 
-Les frases que hi ha ara al full són d'exemple i s'han d'esborrar abans de difondre la web.
-
 El camp `etapa` ha de ser un dels valors de `ETAPES`, escrit exactament igual (per això la pregunta del formulari és una llista desplegable).
 
 ## Enllaços del curtmetratge i del formulari
@@ -50,11 +44,4 @@ Es posen a `CONFIG`, dins de `dades.js` (`urlCurt` i `urlFormulari`). Mentre est
 
 ## Privacitat
 
-El repositori i la web són públics. La web només mostra el nom de pila, però el full de respostes (privat) guarda el nom i cognoms: no el publiquis ni el comparteixis. Cal el permís de la persona, sobretot si és menor d'edat.
-
-## Pendent
-
-- Confirmar l'origen i la llicència de la imatge `sabata.webp` (si és una foto de producte d'una marca, cal permís o crèdit) o substituir-la per una pròpia.
-- Esborrar les files d'exemple del full de càlcul.
-- Posar els enllaços del curtmetratge i del formulari.
-- Verificar els telèfons d'ajuda amb la font oficial abans de difondre la web (el 016 encara no està contrastat).
+El repositori i la web són públics. La web només mostra el nom de pila.
