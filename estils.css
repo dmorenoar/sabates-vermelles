@@ -294,8 +294,9 @@ svg { display: block; }
    «scroll-snap» cada diapositiva s'atura alineada a l'esquerra en lloc de
    quedar a mig camí. El JS només hi afegeix l'avanç automàtic. */
 .carrusel {
+  --sep: 0.25rem;                  /* separació entre quadres (una sola veritat: la fan servir el gap i l'amplada) */
   display: flex;
-  gap: 0.5rem;                     /* separació entre quadres (abans 1rem) */
+  gap: var(--sep);
   margin-top: 1.25rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -304,7 +305,11 @@ svg { display: block; }
 .carrusel::-webkit-scrollbar { display: none; }   /* amaga la barra (Chrome, Safari) */
 .carrusel:empty { display: none; }
 .diapositiva {
-  flex: 0 0 min(22rem, 85%);       /* mai més ample que la pantalla: es veu que n'hi ha una altra al costat */
+  /* Targetes SENCERES: 3 per fila. Restem les 2 separacions i repartim a parts iguals,
+     així mai en queda una de tallada a la vora (calc fa la mateixa feina que a mà). */
+  flex: 0 0 calc((100% - 2 * var(--sep)) / 3);
+  min-width: 0;
+  margin: 0;                       /* <figure> porta de sèrie 40px de marge a cada costat: era la «separació» gran */
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
@@ -328,6 +333,9 @@ svg { display: block; }
 }
 .diapositiva__frase { margin: 0; font-size: 1.05rem; line-height: 1.45; flex: 1; }
 .diapositiva__nom { font-weight: 700; overflow-wrap: anywhere; }
+/* Pantalles més estretes: 2 targetes (tauleta) i 1 targeta (mòbil), també senceres */
+@media (max-width: 899px) { .diapositiva { flex-basis: calc((100% - var(--sep)) / 2); } }
+@media (max-width: 559px) { .diapositiva { flex-basis: 100%; } }
 
 /* --- Detall (finestra modal) --- */
 .detall {
