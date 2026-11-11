@@ -22,7 +22,9 @@
 <!-- Dues tipografies, dos <link> separats: si una falla, l'altra continua carregant -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@800&display=swap">
-<link rel="stylesheet" href="estils.css">
+<!-- «?v=3» és un número de versió: si canvies estils.css, puja'l (v=4…) i tots els
+     navegadors el tornen a baixar en lloc de fer servir la còpia antiga que tenen guardada (caché). -->
+<link rel="stylesheet" href="estils.css?v=3">
 <!-- Icona de la pestanya del navegador i de la pantalla d'inici del mòbil -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -173,7 +175,7 @@
 
 <!-- «defer»: el navegador descarrega els scripts mentre llegeix l'HTML i els executa
      en ordre quan ja existeix tot el DOM. L'ordre importa: app.js necessita dades.js. -->
-<script src="dades.js" defer></script>
-<script src="app.js" defer></script>
+<script src="dades.js?v=3" defer></script>
+<script src="app.js?v=3" defer></script>
 </body>
 </html>
