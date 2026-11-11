@@ -48,7 +48,7 @@ const CONFIG = {
 
   // Cada quants MINUTS la web torna a llegir el full per afegir frases noves
   // sense que ningú hagi de recarregar la pàgina. 0 = no ho fa mai.
-  minutsRefresc: 60
+  minutsRefresc: 20
 };
 
 
