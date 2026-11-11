@@ -306,6 +306,43 @@ function aplicarConfiguracio() {
   configurarEnllac($("#enllac-formulari"), CONFIG.urlFormulari);
 }
 
+/* --- 3.4b Refresc automàtic de les dades ---
+
+   La web carrega les frases en obrir-se. Però algú pot tenir la pàgina oberta
+   hores (o dies, en una pantalla del centre) i, mentrestant, aprovar frases
+   noves al Sheet. Per això, cada CONFIG.minutsRefresc minuts tornem a llegir el
+   full i, SI HA CANVIAT, repintem. Idea: setInterval + «comparar abans de pintar». */
+
+async function refrescarDades() {
+  // No toquem res mentre algú llegeix una frase (la finestra de detall oberta)
+  if (elDetall.open) return;
+  try {
+    const dades = await obtenirFrases();
+    const noves = dades.filter((f) => f.nom && f.etapa && f.frase);
+
+    // Comparem les dues llistes com a text (JSON). Si són iguals no repintem:
+    // així la pàgina no «parpelleja» ni es perd la posició del carrusel cada hora.
+    if (JSON.stringify(noves) === JSON.stringify(estat.frases)) return;
+
+    estat.frases = noves;
+    // Si el filtre triat ja no té cap frase, tornem a «Totes» perquè no quedi buit
+    if (estat.etapa !== TOTES && !noves.some((f) => f.etapa === estat.etapa)) estat.etapa = TOTES;
+
+    elBuit.textContent = "Encara no hi ha frases per mostrar.";   // per si abans havia fallat la càrrega
+    pintarFiltres();
+    actualitzar();
+    pintarCarrusel();
+  } catch (error) {
+    // Si falla (sense xarxa…) no fem res: la pàgina continua amb el que ja mostra
+    console.warn("No s'ha pogut refrescar el mur:", error);
+  }
+}
+
+function programarRefresc() {
+  const minuts = Number(CONFIG.minutsRefresc) || 0;
+  if (minuts > 0) setInterval(refrescarDades, minuts * 60 * 1000);   // minuts → mil·lèsimes de segon
+}
+
 /* --- 3.5 Tema clar / fosc ---
 
    Com funciona (tres capes, de la més bàsica a la més personal):
@@ -415,6 +452,7 @@ elDetall.addEventListener("keydown", (event) => {
 // un missatge amable en lloc de deixar la pàgina en blanc.
 async function iniciar() {
   aplicarConfiguracio();
+  programarRefresc();            // el rellotge del refresc corre encara que la primera càrrega falli
   marcarTema();                  // el selector ha de funcionar encara que les dades fallin
 
   try {

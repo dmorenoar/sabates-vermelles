@@ -44,7 +44,11 @@ const CONFIG = {
 
   // URL de la pestanya «Publicades» del full de càlcul, publicada com a CSV.
   // Si la deixes buida, la web fa servir les frases d'exemple de sota (FRASES_EXEMPLE).
-  urlCsv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTWnBd_nanxm56jAz17jW2BWrPdAOhgom3KGK7BQx6t4bnc7AOEW2pUzOFZKd58bB3LUG8fyqjszTLX/pub?gid=1119069832&single=true&output=csv"
+  urlCsv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTWnBd_nanxm56jAz17jW2BWrPdAOhgom3KGK7BQx6t4bnc7AOEW2pUzOFZKd58bB3LUG8fyqjszTLX/pub?gid=1119069832&single=true&output=csv",
+
+  // Cada quants MINUTS la web torna a llegir el full per afegir frases noves
+  // sense que ningú hagi de recarregar la pàgina. 0 = no ho fa mai.
+  minutsRefresc: 60
 };
 
 
@@ -150,7 +154,9 @@ async function obtenirFrases() {
   // Sense URL configurada: dades d'exemple (útil per provar en local)
   if (!CONFIG.urlCsv) return FRASES_EXEMPLE;
 
-  const resposta = await fetch(CONFIG.urlCsv);
+  // cache: "no-store" → no fem servir cap còpia guardada pel navegador: volem la versió
+  // d'ara mateix del full (sense això, el refresc podria rellegir les dades velles).
+  const resposta = await fetch(CONFIG.urlCsv, { cache: "no-store" });
   if (!resposta.ok) throw new Error("No s'ha pogut llegir el full (" + resposta.status + ")");
 
   const files = analitzarCsv(await resposta.text());
