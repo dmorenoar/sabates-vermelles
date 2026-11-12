@@ -403,8 +403,24 @@ svg { display: block; }
 }
 
 /* --- Peu --- */
-.peu { padding-top: 1rem; border-top: 1px solid var(--junta); font-size: 0.9rem; color: var(--tinta-suau); }
+.peu {
+  display: flex;                      /* text i logo en una fila */
+  align-items: center;
+  justify-content: space-between;     /* text a l'esquerra, logo a la dreta */
+  gap: 1rem 1.5rem;
+  flex-wrap: wrap;                    /* al mòbil, si no hi caben, el logo baixa a sota */
+  padding-top: 1rem;
+  border-top: 1px solid var(--junta);
+  font-size: 0.9rem;
+  color: var(--tinta-suau);
+}
 .peu p { margin: 0; }
+.peu__logo { display: block; width: 7.5rem; height: auto; }
+/* El blau del logo és fosc: sobre fons negre el fem una mica més clar perquè es llegeixi */
+:root[data-theme="dark"] .peu__logo { filter: brightness(1.6); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .peu__logo { filter: brightness(1.6); }
+}
 
 /* Respecta qui té activada l'opció «reduir moviment» al sistema */
 @media (prefers-reduced-motion: reduce) {

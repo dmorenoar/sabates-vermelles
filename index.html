@@ -16,15 +16,15 @@
   sense tocar res més. Això és «separació de responsabilitats».
 -->
 <title>Sabates vermelles ITB</title>
-<meta name="description" content="Mur de frases de l'alumnat de l'ITB per al 25N.">
+<meta name="description" content="Mur de frases de l'alumnat de l'ITB per al 25N, vinculat al curtmetratge de les sabates vermelles.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Dues tipografies, dos <link> separats: si una falla, l'altra continua carregant -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@800&display=swap">
-<!-- «?v=7» és un número de versió: si canvies estils.css, puja'l (v=8…) i tots els
+<!-- «?v=8» és un número de versió: si canvies estils.css, puja'l (v=9…) i tots els
      navegadors el tornen a baixar en lloc de fer servir la còpia antiga que tenen guardada (caché). -->
-<link rel="stylesheet" href="estils.css?v=7">
+<link rel="stylesheet" href="estils.css?v=8">
 <!-- Icona de la pestanya del navegador i de la pantalla d'inici del mòbil -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -72,7 +72,7 @@
       <p class="entradeta">
         Un parell de sabates vermelles buides ocupa el lloc d'una dona que ja no hi és.
         És un símbol contra la violència masclista. Després de veure el curtmetratge,
-        la comunitat educativa de l'ITB ha deixat una frase. Cada casella del mur n'amaga una.
+        l'alumnat de l'ITB ha deixat una frase. Cada casella del mur n'amaga una.
       </p>
       <a class="boto" href="#mur">Llegir les frases</a>
     </div>
@@ -156,6 +156,8 @@
 
   <footer class="peu">
     <p>Projecte de l'Institut Tecnològic de Barcelona (ITB) per al 25N.</p>
+    <!-- Logo de l'ITB a la dreta del peu. És una imatge amb significat (la marca), per això té alt i no alt="". -->
+    <img class="peu__logo" src="logo-itb.svg" alt="Logotip de l'Institut Tecnològic de Barcelona" width="1200" height="569">
   </footer>
 </div>
 
@@ -182,7 +184,7 @@
 
 <!-- «defer»: el navegador descarrega els scripts mentre llegeix l'HTML i els executa
      en ordre quan ja existeix tot el DOM. L'ordre importa: app.js necessita dades.js. -->
-<script src="dades.js?v=7" defer></script>
-<script src="app.js?v=7" defer></script>
+<script src="dades.js?v=8" defer></script>
+<script src="app.js?v=8" defer></script>
 </body>
 </html>
