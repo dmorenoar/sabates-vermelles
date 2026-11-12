@@ -135,28 +135,32 @@ svg { display: block; }
 /* Un enllaç sense href (encara sense configurar a dades.js) es veu desactivat */
 .boto[aria-disabled="true"] { opacity: 0.45; cursor: default; pointer-events: none; }
 
-/* --- Selector de tema (clar / fosc) ---
-   Mateix patró que els filtres: l'estil visual depèn de aria-pressed. */
+/* --- Interruptor de tema (sol / lluna) ---
+   Un botó rodó FIXAT a la vora dreta de la finestra (position: fixed): no ocupa
+   cap fila de la capçalera, així el contingut puja, i sempre és a mà.
+   La icona que es veu és la de l'acció: de dia veus la lluna (→ fosc) i de nit el sol (→ clar). */
 .tema {
-  grid-column: 1 / -1;                 /* ocupa tota la fila de dalt de la capçalera */
-  justify-self: end;
-  display: inline-flex;
-  border: 2px solid var(--junta);
-  border-radius: 2px;
-}
-.tema__opcio {
-  min-height: 2.25rem;
-  padding: 0.25rem 0.9rem;
-  font: 700 0.9rem var(--font-text);
+  position: fixed;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
   color: var(--tinta);
-  background: transparent;
-  border: 0;
+  background: var(--paviment);
+  border: 2px solid var(--junta);
+  border-radius: 50%;
   cursor: pointer;
 }
-.tema__opcio + .tema__opcio { border-left: 2px solid var(--junta); }
-.tema__opcio:hover { background: var(--llosa); }
-/* Va DESPRÉS del :hover perquè, amb la mateixa especificitat, guanya l'últim */
-.tema__opcio[aria-pressed="true"] { background: var(--tinta); color: var(--paviment); }
+.tema:hover { background: var(--llosa); }
+.tema__icona { width: 1.35rem; height: 1.35rem; }
+/* Per defecte (sense JS encara) es veu la lluna; data-actual="dark" mostra el sol */
+.tema__icona--sol { display: none; }
+.tema[data-actual="dark"] .tema__icona--sol { display: block; }
+.tema[data-actual="dark"] .tema__icona--lluna { display: none; }
 
 /* --- Capçalera --- */
 .capcalera {
@@ -164,10 +168,12 @@ svg { display: block; }
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
   gap: 0.75rem 2rem;                    /* files: 0.75rem (abans 2rem) · columnes: 2rem */
   align-items: center;
-  padding-block: clamp(0.75rem, 2vw, 1.5rem) 0;   /* farciment de dalt: abans fins a 4.5rem */
+  padding-block: clamp(0.25rem, 1vw, 0.75rem) 0;   /* farciment de dalt: abans fins a 4.5rem */
 }
 @media (max-width: 760px) {
   .capcalera { grid-template-columns: minmax(0, 1fr); row-gap: 1.5rem; }   /* al mòbil, text i sabates una sota l'altra */
+  /* El botó del tema flota a la dreta: deixem-li lloc perquè no tapi la primera línia */
+  .capcalera .etiqueta { padding-right: 3.25rem; }
 }
 .capcalera h1 {
   margin: 0 0 1.25rem;

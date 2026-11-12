@@ -348,7 +348,7 @@ function programarRefresc() {
    Com funciona (tres capes, de la més bàsica a la més personal):
    1) Per defecte, estils.css segueix el tema del sistema operatiu
       (prefers-color-scheme).
-   2) Si l'usuari tria «Clar» o «Fosc», posem data-theme="light|dark" a
+   2) Si l'usuari prem el botó del sol / la lluna, posem data-theme="light|dark" a
       l'element <html>. El CSS ho detecta i guanya sobre el sistema.
    3) Recordem l'elecció a localStorage per a la propera visita.
 
@@ -365,12 +365,14 @@ function temaActual() {
   return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
-// Marca com a premut el botó del tema actiu (mateix patró que els filtres)
+// Actualitza el botó únic de tema. Guardem el tema ACTUAL a data-actual i el CSS
+// decideix quina icona es veu (sol o lluna). A més, canviem l'etiqueta per als
+// lectors de pantalla: una icona sola no diu res si no té text alternatiu.
 function marcarTema() {
   const actual = temaActual();
-  for (const boto of elTema.querySelectorAll(".tema__opcio")) {
-    boto.setAttribute("aria-pressed", String(boto.dataset.tema === actual));
-  }
+  elTema.dataset.actual = actual;
+  elTema.setAttribute("aria-label", actual === "dark" ? "Canvia al tema clar" : "Canvia al tema fosc");
+  elTema.title = elTema.getAttribute("aria-label");   // tooltip per a qui fa servir ratolí
 }
 
 function triarTema(tema) {
@@ -409,11 +411,10 @@ elAnterior.addEventListener("click", () => moureDetall(-1));
 elSeguent.addEventListener("click", () => moureDetall(1));
 $("#tancar").addEventListener("click", () => elDetall.close());
 
-// Selector de tema (delegació d'esdeveniments, igual que els filtres)
-elTema.addEventListener("click", (event) => {
-  const boto = event.target.closest(".tema__opcio");
-  if (!boto) return;
-  triarTema(boto.dataset.tema);
+// Interruptor de tema: UN sol botó que alterna entre clar i fosc.
+// Ja no cal delegació d'esdeveniments: només hi ha un element.
+elTema.addEventListener("click", () => {
+  triarTema(temaActual() === "dark" ? "light" : "dark");
 });
 
 // Si el tema canvia per un altre camí (l'usuari canvia el del sistema o el
