@@ -150,16 +150,37 @@ function analitzarCsv(text) {
   return files;
 }
 
+const CLAU_FRASES = "frases-sabates";   // clau de localStorage per a la còpia de seguretat
+
 async function obtenirFrases() {
   // Sense URL configurada: dades d'exemple (útil per provar en local)
   if (!CONFIG.urlCsv) return FRASES_EXEMPLE;
 
   // cache: "no-store" → no fem servir cap còpia guardada pel navegador: volem la versió
   // d'ara mateix del full (sense això, el refresc podria rellegir les dades velles).
-  const resposta = await fetch(CONFIG.urlCsv, { cache: "no-store" });
-  if (!resposta.ok) throw new Error("No s'ha pogut llegir el full (" + resposta.status + ")");
+  try {
+    const resposta = await fetch(CONFIG.urlCsv, { cache: "no-store" });
+    if (!resposta.ok) throw new Error("No s'ha pogut llegir el full (" + resposta.status + ")");
+    const frases = convertirCsv(await resposta.text());
 
-  const files = analitzarCsv(await resposta.text());
+    // Còpia de seguretat per a la PWA: guardem les últimes frases bones al navegador.
+    // try/catch: localStorage pot estar bloquejat (mode privat) i no ha de trencar res.
+    try { localStorage.setItem(CLAU_FRASES, JSON.stringify(frases)); } catch (error) { /* no passa res */ }
+    return frases;
+  } catch (error) {
+    // Sense connexió (o Google caigut): mostrem les últimes frases que vam poder llegir.
+    // Així l'app instal·lada no s'obre buida en un túnel o amb el mòbil sense dades.
+    try {
+      const guardades = JSON.parse(localStorage.getItem(CLAU_FRASES) || "null");
+      if (Array.isArray(guardades) && guardades.length) return guardades;
+    } catch (errorLectura) { /* còpia il·legible: seguim amb l'error original */ }
+    throw error;                       // sense còpia, app.js mostra el seu missatge d'error
+  }
+}
+
+// Converteix el text CSV en un array d'objectes {nom, etapa, frase}.
+function convertirCsv(text) {
+  const files = analitzarCsv(text);
   const capcalera = files.shift().map((titol) => titol.trim().toLowerCase());
 
   // Busquem cada columna pel NOM de la capçalera i no per la posició.

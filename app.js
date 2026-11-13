@@ -475,3 +475,18 @@ async function iniciar() {
 }
 
 iniciar();
+
+
+/* 6. PWA · SERVICE WORKER ---------------------------------------------
+   Registrar el service worker (sw.js) és el que fa que el navegador ofereixi
+   «Instal·la l'aplicació» i que la web s'obri encara que no hi hagi xarxa.
+   Condicions: servir-la per HTTPS (o localhost) i que el navegador ho suporti.
+   Amb file:// (doble clic) no funciona, i per això ho comprovem abans. */
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  // Esperem a «load» perquè registrar el SW no ha de competir amb la càrrega de la pàgina
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch((error) => {
+      console.warn("No s'ha pogut registrar el service worker:", error);
+    });
+  });
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Sabates vermelles · 25N · ITB",
+  "short_name": "Sabates vermelles",
+  "description": "Mur de frases de la comunitat de l'Institut Tecnològic de Barcelona contra la violència masclista.",
+  "lang": "ca",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#E6E3DF",
+  "theme_color": "#B1122B",
+  "icons": [
+    { "src": "icona-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icona-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icona-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
