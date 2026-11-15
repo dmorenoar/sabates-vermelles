@@ -56,16 +56,18 @@ const elCarrusel = $("#carrusel");
 
 /* --- 3.1 Lògica de dades (no toquen el DOM: fàcils de provar) --- */
 
-// Retorna les etapes que tenen almenys una frase, en l'ordre de ETAPES
-// (definit a dades.js). Per què no ordenem alfabèticament? Perquè l'ordre
-// que volem és de menys a més nivell, i l'alfabet el trencaria.
+// Retorna les etapes que ha de mostrar el filtre, en l'ordre de ETAPES
+// (definit a dades.js). Les etapes OFICIALS surten SEMPRE, encara que ara
+// mateix no tinguin cap frase (el botó mostrarà un 0): així l'alumnat veu que
+// hi ha un lloc per a la seva etapa i que encara hi pot participar.
+// Per què no ordenem alfabèticament? Perquè l'ordre que volem és de menys a més
+// nivell, i l'alfabet el trencaria.
 // Si a les dades hi ha una etapa que NO és a ETAPES (una errada d'escriptura),
 // la posem al final: així es veu l'error en lloc de perdre la frase en silenci.
 function llistarEtapes(frases) {
   const presents = new Set(frases.map((f) => f.etapa));          // Set: sense repetits
-  const conegudes = ETAPES.filter((etapa) => presents.has(etapa));
   const desconegudes = [...presents].filter((etapa) => !ETAPES.includes(etapa));
-  return [...conegudes, ...desconegudes];
+  return [...ETAPES, ...desconegudes];
 }
 
 function frasesFiltrades() {
@@ -155,6 +157,10 @@ function pintarGrid() {
   const n = llista.length;
   const text = `${n} ${n === 1 ? "frase" : "frases"}`;
   elRecompte.textContent = estat.etapa === TOTES ? text : `${text} · ${estat.etapa}`;
+  // Missatge propi quan l'etapa triada encara no té cap frase
+  elBuit.textContent = estat.etapa === TOTES
+    ? "Encara no hi ha frases per mostrar."
+    : `Encara no hi ha frases de ${estat.etapa}. Pots ser la primera!`;
   elBuit.hidden = n > 0;
 }
 
@@ -325,10 +331,10 @@ async function refrescarDades() {
     if (JSON.stringify(noves) === JSON.stringify(estat.frases)) return;
 
     estat.frases = noves;
-    // Si el filtre triat ja no té cap frase, tornem a «Totes» perquè no quedi buit
-    if (estat.etapa !== TOTES && !noves.some((f) => f.etapa === estat.etapa)) estat.etapa = TOTES;
+    // Si el filtre triat ja no existeix, tornem a «Totes» perquè no quedi buit
+    // (només si l'etapa ja no existeix als botons: les oficials sempre hi són, encara que valguin 0)
+    if (estat.etapa !== TOTES && !llistarEtapes(noves).includes(estat.etapa)) estat.etapa = TOTES;
 
-    elBuit.textContent = "Encara no hi ha frases per mostrar.";   // per si abans havia fallat la càrrega
     pintarFiltres();
     actualitzar();
     pintarCarrusel();
