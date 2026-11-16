@@ -22,9 +22,9 @@
 <!-- Dues tipografies, dos <link> separats: si una falla, l'altra continua carregant -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@800&display=swap">
-<!-- «?v=14» és un número de versió: si canvies estils.css, puja'l (v=15…) i tots els
+<!-- «?v=15» és un número de versió: si canvies estils.css, puja'l (v=16…) i tots els
      navegadors el tornen a baixar en lloc de fer servir la còpia antiga que tenen guardada (caché). -->
-<link rel="stylesheet" href="estils.css?v=14">
+<link rel="stylesheet" href="estils.css?v=15">
 <!-- Icona de la pestanya del navegador i de la pantalla d'inici del mòbil -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -176,6 +176,14 @@
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
         </a>
       </p>
+      <!-- Enllaç al vídeo ORIGINAL: l'autor demana que es difongui des del seu canal (no re-pujat) perquè consti l'equip artístic i tècnic. -->
+      <p>
+        Curtmetratge original:
+        <a href="https://youtu.be/n_5vaz1dehQ" target="_blank" rel="noopener">veure'l a YouTube</a>
+        <a class="peu__icona" href="https://youtu.be/n_5vaz1dehQ" target="_blank" rel="noopener" aria-label="Curtmetratge original a YouTube" title="YouTube">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/></svg>
+        </a>
+      </p>
       <p>La il·lustració de la sabata està creada amb eines d'IA generativa.</p>
       <p>Projecte de l'Institut Tecnològic de Barcelona (ITB) per al 25N.</p>
     </div>
@@ -223,7 +231,7 @@
 
 <!-- «defer»: el navegador descarrega els scripts mentre llegeix l'HTML i els executa
      en ordre quan ja existeix tot el DOM. L'ordre importa: app.js necessita dades.js. -->
-<script src="dades.js?v=14" defer></script>
-<script src="app.js?v=14" defer></script>
+<script src="dades.js?v=15" defer></script>
+<script src="app.js?v=15" defer></script>
 </body>
 </html>
