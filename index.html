@@ -22,9 +22,9 @@
 <!-- Dues tipografies, dos <link> separats: si una falla, l'altra continua carregant -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@800&display=swap">
-<!-- «?v=10» és un número de versió: si canvies estils.css, puja'l (v=11…) i tots els
+<!-- «?v=11» és un número de versió: si canvies estils.css, puja'l (v=12…) i tots els
      navegadors el tornen a baixar en lloc de fer servir la còpia antiga que tenen guardada (caché). -->
-<link rel="stylesheet" href="estils.css?v=10">
+<link rel="stylesheet" href="estils.css?v=11">
 <!-- Icona de la pestanya del navegador i de la pantalla d'inici del mòbil -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -186,9 +186,25 @@
   </div>
 </dialog>
 
+<!--
+  Segon <dialog>: el reproductor del curt. Dins hi ha un <iframe> (una «finestreta»
+  cap a una altra pàgina) que només es carrega quan l'obrim. Així no es descarrega
+  el vídeo si ningú el vol veure, i en tancar el buidem perquè s'aturi el so.
+-->
+<dialog id="video" class="video" aria-labelledby="video-titol">
+  <div class="video__cap">
+    <h2 id="video-titol" class="video__titol">El curtmetratge</h2>
+    <button type="button" id="tancar-video" class="boto">Tanca</button>
+  </div>
+  <div class="video__marc">
+    <iframe id="video-iframe" title="Curtmetratge de les sabates vermelles" allow="autoplay; fullscreen" allowfullscreen referrerpolicy="no-referrer"></iframe>
+  </div>
+  <p class="video__peu">Si no es veu bé, <a id="video-extern" target="_blank" rel="noopener">obre'l en una pestanya nova</a>.</p>
+</dialog>
+
 <!-- «defer»: el navegador descarrega els scripts mentre llegeix l'HTML i els executa
      en ordre quan ja existeix tot el DOM. L'ordre importa: app.js necessita dades.js. -->
-<script src="dades.js?v=10" defer></script>
-<script src="app.js?v=10" defer></script>
+<script src="dades.js?v=11" defer></script>
+<script src="app.js?v=11" defer></script>
 </body>
 </html>

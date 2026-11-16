@@ -46,6 +46,8 @@ const elGrid = $("#grid");
 const elRecompte = $("#recompte");
 const elBuit = $("#buit");
 const elDetall = $("#detall");
+const elVideo = $("#video");
+const elVideoIframe = $("#video-iframe");
 const elAnterior = $("#anterior");
 const elSeguent = $("#seguent");
 const elTema = $("#tema");
@@ -307,9 +309,24 @@ function configurarEnllac(element, url) {
   }
 }
 
+// Converteix l'enllaç «normal» del vídeo en l'enllaç per INCRUSTAR-lo (embed).
+// Cada plataforma té el seu: Drive acaba en /preview i YouTube fa servir /embed/.
+// Si l'enllaç no és de cap de les dues, retornem null i el botó farà el
+// comportament de sempre (obrir l'enllaç en una pestanya nova).
+function urlIncrustada(url) {
+  const drive = url.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+  if (drive) return `https://drive.google.com/file/d/${drive[1]}/preview`;
+
+  const youtube = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([\w-]{11})/);
+  if (youtube) return `https://www.youtube-nocookie.com/embed/${youtube[1]}`;
+
+  return null;
+}
+
 function aplicarConfiguracio() {
   configurarEnllac($("#enllac-curt"), CONFIG.urlCurt);
   configurarEnllac($("#enllac-formulari"), CONFIG.urlFormulari);
+  $("#video-extern").href = CONFIG.urlCurt || "#";
 }
 
 /* --- 3.4b Refresc automàtic de les dades ---
@@ -416,6 +433,26 @@ elGrid.addEventListener("click", (event) => {
 elAnterior.addEventListener("click", () => moureDetall(-1));
 elSeguent.addEventListener("click", () => moureDetall(1));
 $("#tancar").addEventListener("click", () => elDetall.close());
+
+// Reproductor del curt en una finestra modal.
+// «Millora progressiva»: el botó continua sent un enllaç normal (href). Si el
+// JavaScript falla o l'enllaç no es pot incrustar, s'obre en una pestanya nova.
+// Si tot va bé, interceptem el clic (preventDefault) i el mostrem aquí mateix.
+$("#enllac-curt").addEventListener("click", (event) => {
+  const embed = CONFIG.urlCurt && urlIncrustada(CONFIG.urlCurt);
+  if (!embed) return;                  // sense embed: deixem que l'enllaç faci la seva feina
+  event.preventDefault();              // aturem la navegació a una altra pàgina
+  elVideoIframe.src = embed;           // el vídeo es carrega NOMÉS ara
+  elVideo.showModal();
+});
+
+// En tancar (botó, tecla Esc o clic al fons) buidem l'iframe: si no, el vídeo
+// seguiria sonant amagat. «close» salta sempre, tanqui com tanqui.
+elVideo.addEventListener("close", () => { elVideoIframe.src = "about:blank"; });
+$("#tancar-video").addEventListener("click", () => elVideo.close());
+elVideo.addEventListener("click", (event) => {
+  if (event.target === elVideo) elVideo.close();
+});
 
 // Interruptor de tema: UN sol botó que alterna entre clar i fosc.
 // Ja no cal delegació d'esdeveniments: només hi ha un element.

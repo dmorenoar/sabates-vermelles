@@ -379,6 +379,25 @@ svg { display: block; }
 .posicio { margin-inline: 0.25rem; color: var(--tinta-suau); font-variant-numeric: tabular-nums; }
 .detall__accions #tancar { margin-left: auto; }
 
+/* --- Reproductor del curt (finestra modal) --- */
+.video {
+  width: min(60rem, calc(100% - 1rem));
+  padding: 0;
+  color: var(--tinta);
+  background: var(--llosa);
+  border: 1px solid var(--junta);
+  border-radius: 2px;
+}
+.video::backdrop { background: rgb(20 15 16 / 0.75); }
+.video__cap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.75rem 1rem; }
+.video__titol { margin: 0; font-size: 1.1rem; }
+/* aspect-ratio manté la proporció 16:9 de la pantalla sigui quina sigui l'amplada */
+.video__marc { aspect-ratio: 16 / 9; background: #000; }
+.video__marc iframe { display: block; width: 100%; height: 100%; border: 0; }
+.video__peu { margin: 0; padding: 0.6rem 1rem; font-size: 0.9rem; color: var(--tinta-suau); }
+/* Pantalla baixa (tauleta/mòbil en horitzontal): el vídeo no ha de superar l'alçada visible */
+@media (max-height: 520px) { .video__marc { aspect-ratio: auto; height: calc(100dvh - 7rem); } }
+
 /* --- Ajuda --- */
 .ajuda { padding: clamp(1.25rem, 4vw, 2rem); background: var(--llosa); border: 1px solid var(--junta); border-radius: 2px; }
 .ajuda h2 { margin-bottom: 0.5rem; }
