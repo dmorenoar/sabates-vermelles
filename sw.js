@@ -21,7 +21,7 @@
    tothom renovi la caché, puja el número de VERSIO.
    ===================================================================== */
 
-const VERSIO = "v4";
+const VERSIO = "v5";
 const CACHE = "sabates-" + VERSIO;
 
 // Els fitxers que desem d'entrada perquè la web s'obri sense connexió.

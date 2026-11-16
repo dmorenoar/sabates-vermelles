@@ -63,10 +63,11 @@ const CONFIG = {
    2) Si al formulari es pot escriure text lliure, sortiran «cfgs»,
       «CFGS », «Cicle superior»… i cada variant seria un filtre diferent.
       Per això, al Google Forms, la pregunta d'etapa ha de ser una LLISTA
-      DESPLEGABLE amb exactament aquestes cinc opcions.
+      DESPLEGABLE amb exactament aquestes sis opcions.
       (A la informàtica això es diu «vocabulari controlat».)
    --------------------------------------------------------------------- */
-const ETAPES = ["PFI", "CFGM", "CFGS", "MÀSTER", "PERSONAL DEL CENTRE"];
+// «VISITANTS / VISITORS» ha de coincidir (llevat de majúscules) amb l'opció del Google Forms.
+const ETAPES = ["PFI", "CFGM", "CFGS", "MÀSTER", "PERSONAL DEL CENTRE", "VISITANTS / VISITORS"];
 
 
 /* ---------------------------------------------------------------------
@@ -221,7 +222,7 @@ function convertirCsv(text) {
    CREATE TABLE frases (
      id INTEGER PRIMARY KEY,
      nom TEXT NOT NULL,
-     etapa TEXT NOT NULL CHECK (etapa IN ('PFI','CFGM','CFGS','MÀSTER','PERSONAL DEL CENTRE')),
+     etapa TEXT NOT NULL CHECK (etapa IN ('PFI','CFGM','CFGS','MÀSTER','PERSONAL DEL CENTRE','VISITANTS / VISITORS')),
      frase TEXT NOT NULL,
      aprovada INTEGER NOT NULL DEFAULT 0
    );
