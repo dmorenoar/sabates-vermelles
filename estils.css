@@ -434,6 +434,17 @@ svg { display: block; }
   color: var(--tinta-suau);
 }
 .peu p { margin: 0; }
+.peu__text { display: grid; gap: 0.35rem; }
+.peu__titol { margin: 0 0 0.25rem; font-size: 1rem; color: var(--tinta); }
+.peu a:not(.peu__icona) { color: var(--tinta); text-decoration: underline; text-underline-offset: 0.2em; }
+.peu a:not(.peu__icona):hover { color: var(--roig); }
+/* Icona clicable: zona tàctil còmoda (mínim ~44px) sense fer l'icona gran */
+.peu__icona {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.75rem; height: 2.75rem; margin-block: -0.9rem; vertical-align: middle;
+  color: var(--tinta-suau);
+}
+.peu__icona:hover { color: var(--roig); }
 .peu__logo { display: block; width: 7.5rem; height: auto; }
 /* El blau del logo és fosc: sobre fons negre el fem una mica més clar perquè es llegeixi */
 :root[data-theme="dark"] .peu__logo { filter: brightness(1.6); }

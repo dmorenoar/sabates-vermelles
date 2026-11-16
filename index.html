@@ -22,9 +22,9 @@
 <!-- Dues tipografies, dos <link> separats: si una falla, l'altra continua carregant -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@800&display=swap">
-<!-- «?v=13» és un número de versió: si canvies estils.css, puja'l (v=14…) i tots els
+<!-- «?v=14» és un número de versió: si canvies estils.css, puja'l (v=15…) i tots els
      navegadors el tornen a baixar en lloc de fer servir la còpia antiga que tenen guardada (caché). -->
-<link rel="stylesheet" href="estils.css?v=13">
+<link rel="stylesheet" href="estils.css?v=14">
 <!-- Icona de la pestanya del navegador i de la pantalla d'inici del mòbil -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -159,7 +159,26 @@
   </main>
 
   <footer class="peu">
-    <p>Projecte de l'Institut Tecnològic de Barcelona (ITB) per al 25N.</p>
+    <!-- Crèdits: el nom és un enllaç al web de l'autor/a; les icones porten a xarxes o a la pàgina del projecte.
+         Les icones són SVG en línia (cap llibreria externa): no depenen de la xarxa i hereten el color del text.
+         Cada enllaç que només té icona necessita aria-label: és el «nom» que llegeix un lector de pantalla. -->
+    <div class="peu__text">
+      <h2 class="peu__titol">Crèdits i agraïments</h2>
+      <p>
+        Curtmetratge: guió, muntatge i direcció d'<a href="https://adrianvereda.es/" target="_blank" rel="noopener">Adrián Vereda</a>
+        <a class="peu__icona" href="https://www.instagram.com/adrivereda/" target="_blank" rel="noopener" aria-label="Instagram d'Adrián Vereda" title="Instagram">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg>
+        </a>
+      </p>
+      <p>
+        Inspirat en el projecte artístic <em>Zapatos Rojos</em> d'<a href="https://www.elinachauvet.art/" target="_blank" rel="noopener">Elina Chauvet</a>
+        <a class="peu__icona" href="https://www.elinachauvet.art/zapatos-rojos" target="_blank" rel="noopener" aria-label="Pàgina del projecte Zapatos Rojos" title="Zapatos Rojos">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+        </a>
+      </p>
+      <p>La il·lustració de la sabata està creada amb eines d'IA generativa.</p>
+      <p>Projecte de l'Institut Tecnològic de Barcelona (ITB) per al 25N.</p>
+    </div>
     <!-- Logo de l'ITB a la dreta del peu. És una imatge amb significat (la marca), per això té alt i no alt="". -->
     <img class="peu__logo" src="logo-itb.svg" alt="Logotip de l'Institut Tecnològic de Barcelona" width="1200" height="569">
   </footer>
@@ -204,7 +223,7 @@
 
 <!-- «defer»: el navegador descarrega els scripts mentre llegeix l'HTML i els executa
      en ordre quan ja existeix tot el DOM. L'ordre importa: app.js necessita dades.js. -->
-<script src="dades.js?v=13" defer></script>
-<script src="app.js?v=13" defer></script>
+<script src="dades.js?v=14" defer></script>
+<script src="app.js?v=14" defer></script>
 </body>
 </html>
