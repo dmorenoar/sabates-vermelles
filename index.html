@@ -22,9 +22,9 @@
 <!-- Dues tipografies, dos <link> separats: si una falla, l'altra continua carregant -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@800&display=swap">
-<!-- «?v=15» és un número de versió: si canvies estils.css, puja'l (v=16…) i tots els
+<!-- «?v=17» és un número de versió: si canvies estils.css, puja'l (v=18…) i tots els
      navegadors el tornen a baixar en lloc de fer servir la còpia antiga que tenen guardada (caché). -->
-<link rel="stylesheet" href="estils.css?v=15">
+<link rel="stylesheet" href="estils.css?v=17">
 <!-- Icona de la pestanya del navegador i de la pantalla d'inici del mòbil -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -102,7 +102,15 @@
         <li class="pas">
           <h3>Escriu la teva frase</h3>
           <p>Omple el formulari amb el teu nom, la teva etapa educativa i una frase.</p>
-          <a id="enllac-formulari" class="boto" target="_blank" rel="noopener">Obrir el formulari</a>
+          <!-- Botó + QR. El QR és per a quan la web es PROJECTA en una pantalla: qui té el mòbil a la mà
+               l'escaneja i contesta sense escriure cap adreça. Al mòbil s'amaga (ja tens el botó). -->
+          <div class="pas__accio">
+            <a id="enllac-formulari" class="boto" target="_blank" rel="noopener">Obrir el formulari</a>
+            <figure class="qr">
+              <img src="qr-formulari.svg" alt="Codi QR per obrir el formulari des del mòbil" width="120" height="120">
+              <figcaption>Escaneja'l<br>amb el mòbil</figcaption>
+            </figure>
+          </div>
         </li>
         <li class="pas">
           <h3>Troba la teva casella</h3>
@@ -231,7 +239,7 @@
 
 <!-- «defer»: el navegador descarrega els scripts mentre llegeix l'HTML i els executa
      en ordre quan ja existeix tot el DOM. L'ordre importa: app.js necessita dades.js. -->
-<script src="dades.js?v=15" defer></script>
-<script src="app.js?v=15" defer></script>
+<script src="dades.js?v=17" defer></script>
+<script src="app.js?v=17" defer></script>
 </body>
 </html>

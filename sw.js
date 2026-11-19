@@ -21,7 +21,7 @@
    tothom renovi la caché, puja el número de VERSIO.
    ===================================================================== */
 
-const VERSIO = "v7";
+const VERSIO = "v9";
 const CACHE = "sabates-" + VERSIO;
 
 // Els fitxers que desem d'entrada perquè la web s'obri sense connexió.
@@ -35,6 +35,7 @@ const PRECACHE = [
   "app.js",
   "sabata.webp",
   "logo-itb.svg",
+  "qr-formulari.svg",
   "favicon.png",
   "apple-touch-icon.png",
   "icona-192.png",

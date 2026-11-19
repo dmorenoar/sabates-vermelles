@@ -229,6 +229,19 @@ svg { display: block; }
 .pas p { margin: 0 0 0.5rem; color: var(--tinta-suau); }
 .pas .boto { margin-top: auto; }
 
+/* Botó + QR en una fila, alineats pel BAIX: així el botó del pas 2 queda a la mateixa
+   altura que el del pas 1 i el QR «penja» a la seva dreta. Si no hi caben, el QR baixa (flex-wrap). */
+.pas__accio { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.75rem 1rem; margin-top: auto; }
+.pas__accio .boto { margin-top: 0; }
+.qr { display: grid; gap: 0.3rem; margin: 0; }
+/* El QR SEMPRE negre sobre blanc (el fons blanc és part del dibuix: és la «zona de silenci»
+   que necessiten els lectors, també en tema fosc). 6.5rem = discret però escanejable des d'una
+   pantalla projectada; si vols canviar-ne la mida, només toques aquesta línia. */
+.qr img { display: block; width: 6.5rem; height: 6.5rem; border-radius: 2px; }
+.qr figcaption { max-width: 6.5rem; font-size: 0.75rem; line-height: 1.25; color: var(--tinta-suau); }
+/* Al mòbil el QR no serveix (ja ets al mòbil): l'amaguem */
+@media (max-width: 760px) { .qr { display: none; } }
+
 /* --- El mur --- */
 .mur__capcalera {
   display: flex;
@@ -337,7 +350,29 @@ svg { display: block; }
   background: var(--roig);
   border-radius: 2px;
 }
-.diapositiva__frase { margin: 0; font-size: 1.05rem; line-height: 1.45; flex: 1; }
+/* Alçada de la frase FIXA: totes les caixes fan el mateix, curtes o llargues.
+   - --linies = quantes línies de text hi caben. 3 és el que ocupa una frase com
+     «Saps identificar en el teu dia a dia tots els tipus de violència de la piràmide…?»
+     (mesurat amb la tipografia real). En pantalles on la caixa és més estreta en cal 4.
+   - line-clamp talla el text que sobra i hi posa «…» (només en visual: el text sencer
+     continua al DOM, i es pot llegir sencer clicant la frase al mur de sota).
+   - min-height reserva l'espai encara que la frase sigui curta, i així les caixes no
+     canvien d'alçada quan gira el carrusel. */
+.carrusel { --linies: 3; }
+@media (max-width: 380px), (min-width: 560px) and (max-width: 959px) { .carrusel { --linies: 4; } }
+.diapositiva__frase {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.45;
+  flex: 1;
+  min-height: calc(var(--linies) * 1.45em);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--linies);
+  line-clamp: var(--linies);
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
 .diapositiva__nom { font-weight: 700; overflow-wrap: anywhere; }
 /* Pantalles més estretes: 2 targetes (tauleta) i 1 targeta (mòbil), també senceres */
 @media (max-width: 899px) { .diapositiva { flex-basis: calc((100% - var(--sep)) / 2); } }
